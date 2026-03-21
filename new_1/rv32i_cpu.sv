@@ -64,7 +64,7 @@ module control_unit(
 
 
 
-    typedef enum logic { 
+    typedef enum logic [3:0]{ 
         FETCH, 
         DECODE, 
         EXECUTE, 
