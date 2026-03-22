@@ -162,7 +162,7 @@ register U_PC4_REG_WB (
     .data_out(o_pc_4)
 );
  
-
+//IMM--> WB
 register U_IMM_REG_WB (
     .clk(clk), 
     .rst(rst),
