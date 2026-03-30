@@ -6,11 +6,12 @@ module instruction_mem(
     output [31:0] instr_data
     );
 
-    logic [31:0] rom[0:127];
+    logic [31:0] rom[0:255];   //because of c code
 
     initial begin
         
-        $readmemh("riscv_rv32i_rom_data_sum.mem", rom);
+        $readmemh("APB_UART.mem", rom);
+        //$readmemh("riscv_rv32i_rom_data_sum.mem", rom);
 
     end
 

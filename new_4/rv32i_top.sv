@@ -2,17 +2,17 @@
 
 
 module rv32i_top(
-        input clk,
-        input rst
-        //output [31:0] test_alu_out,
-        //output [31:0] test_mem_wdata
+        input         clk,
+        input         rst
     );
 
 
-    logic dwe;
+    //logic dwe;
     logic [2:0] o_funct3;
-    logic [31:0] instr_addr, instr_data, daddr, dwdata,drdata;
+    logic [31:0] instr_addr, instr_data, bus_addr, bus_wdata, bus_rdata;
     logic [3:0] alu_control;
+    logic bus_w_req, bus_r_req,bus_ready;
+    
 
     //assign test_alu_out = daddr;
     //assign test_mem_wdata = dwdata;
@@ -26,10 +26,35 @@ module rv32i_top(
     .o_funct3(o_funct3)
     );
 
-    data_mem U_DATA_MEM(
-        .*, 
-        .i_funct3(o_funct3)
+ apb_master U_ABP_MASTER(
+         
+        .PCLK(clk),
+        .PRESET(rst),
+        .addr(bus_addr),
+        .Wdata(bus_wdata),
+        .w_req(bus_w_req), // from cpu, write request, signal cpu : dwe
+        .r_req(bus_r_req), // from cpu, read request, signal cpu : dre 
+        .rdata(bus_rdata),   // RAM  
+        .ready(bus_ready)
+
+
     );
+
+
+
+
+//    data_mem U_DATA_MEM(
+//        .*, 
+//        .i_funct3(o_funct3)
+//    );
+
+
+    
+
+
+
+
+
 
 //    PC U_PC (
 //    .clk(clk),

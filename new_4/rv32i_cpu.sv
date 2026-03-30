@@ -5,12 +5,14 @@ module rv32i_cpu(
     input logic         clk,
     input logic         rst,
     input logic [31:0]  instr_data,
-    input logic [31:0]  drdata,
+    input logic [31:0]  bus_rdata,
+    input               bus_ready,
     output logic [31:0] instr_addr,
+    output              bus_w_req,
+    output              bus_r_req,
     output  [2:0]       o_funct3,
-    output              dwe,
-    output [31:0]       daddr,
-    output [31:0]       dwdata
+    output [31:0]       bus_addr,
+    output [31:0]       bus_wdata
     );
 
     logic pc_en,rf_we,alu_src,branch, jalr_srcsel, jal_srcsel;
@@ -25,6 +27,7 @@ module rv32i_cpu(
     .funct7(instr_data[31:25]),
     .funct3(instr_data[14:12]),
     .opcode(instr_data[6:0]),
+    .ready(bus_ready),
     .pc_en(pc_en),  //for muticycle Fetch
     .alu_src(alu_src),
     .rf_we(rf_we),
@@ -34,7 +37,8 @@ module rv32i_cpu(
     .rfwd_src(rfwd_src),
     .alu_control(alu_control),
     .o_funct3(o_funct3),
-    .dwe(dwe)
+    .dwe(bus_w_req),
+    .dre(bus_r_req)
 );
 
  rv32i_datapath U_DATAPATH(
@@ -50,6 +54,7 @@ module control_unit(
     input  logic [6:0] funct7,
     input  logic [2:0] funct3,
     input  logic [6:0] opcode,
+    input              ready,
     output logic       pc_en, 
     output logic       alu_src,
     output logic       rf_we,
@@ -59,7 +64,8 @@ module control_unit(
     output logic [3:0] alu_control,
     output logic [2:0] rfwd_src,
     output logic [2:0] o_funct3,
-    output logic       dwe
+    output logic       dwe,
+    output logic       dre
     //output logic       ir_en
 );
 
@@ -122,7 +128,9 @@ module control_unit(
                 MEM: begin
                     case (opcode)
                         `S_TYPE:begin
-                            n_state = FETCH;
+                            if (ready) begin
+                                n_state = FETCH;
+                            end
                         end
                         `IL_TYPE:begin
                             n_state = WB;
@@ -131,7 +139,9 @@ module control_unit(
                     endcase
                 end
                 WB: begin
-                    n_state = FETCH;
+                    if (ready) begin
+                        n_state = FETCH;
+                    end
                 end
                  
             endcase
@@ -148,7 +158,8 @@ module control_unit(
         alu_src     = 1'b0;
         rfwd_src    = 3'b000;
         o_funct3    = 3'b000;
-        dwe         = 1'b0;
+        dwe         = 1'b0; // for s type
+        dre         = 1'b0; // for IL  type
         //ir_en       = 1'b0;
         case (c_state)
             FETCH: begin
@@ -223,8 +234,10 @@ module control_unit(
             end
 
             WB:begin
-                rf_we = 1'b1;
+                //IL TYPE
+                rf_we    = 1'b1;
                 rfwd_src = 3'b001;
+                dre    = 1'b1;
             end
         endcase
     end 

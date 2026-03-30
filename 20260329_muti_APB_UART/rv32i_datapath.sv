@@ -8,9 +8,9 @@ module rv32i_datapath(
         input   logic           pc_en,
         input   logic           rf_we,
         input                   alu_src,
-        input   logic  [3:0]   alu_control,
+        input   logic  [3:0]    alu_control,
         input   logic  [31:0]   instr_data,
-        input          [31:0]   drdata,
+        input          [31:0]   bus_rdata,
         input          [2:0]    rfwd_src,
         input                   branch,
         input                   jalr_srcsel,
@@ -18,8 +18,8 @@ module rv32i_datapath(
         //input   logic           ir_en,
         //output  logic   [31:0]  ir_data_out 
         output  logic   [31:0]  instr_addr,
-        output          [31:0]  daddr,
-        output          [31:0]  dwdata
+        output          [31:0]  bus_addr,
+        output          [31:0]  bus_wdata
 
 
 
@@ -39,8 +39,8 @@ module rv32i_datapath(
 
     //assign [31:0]ir_data;
     // write back to register file 
-    assign daddr = o_exe_alu_result;
-    assign dwdata = o_exe_rs2;
+    assign bus_addr = o_exe_alu_result;
+    assign bus_wdata = o_exe_rs2;
 
 
 //fetch, exexute
@@ -147,7 +147,7 @@ register U_EXE_REG_RS2(
 register U_MEM_REG_DRDATA(
         .clk(clk),
         .rst(rst),
-        .data_in(drdata), //from alu result
+        .data_in(bus_rdata), //from alu result
         .data_out(o_mem_drdata) // to data MEM_Wdata
 );
 
@@ -214,7 +214,7 @@ module mux_5x1 (
             3'b010: o_mux_5x1 = in2;
             3'b011: o_mux_5x1 = in3;
             3'b100: o_mux_5x1 = in4; 
-             default: o_mux_5x1 = 32'hxxxx;
+             default: o_mux_5x1 = 32'h0000_0000;
         endcase
         
     end
@@ -312,7 +312,7 @@ module register_file (
 
 
     always_ff @( posedge clk) begin 
-            if(!rst & rf_we & (WA != 5'd0) )begin
+            if(!rst & rf_we & (WA != 5'd0) )begin     
                 reg_file[WA] <= Wdata;    
             
             end
@@ -341,7 +341,7 @@ module alu (
 
     //R-TYPE 
     always_comb begin 
-        alu_result = 0;
+        alu_result = 32'h0000_0000;
         case (alu_control)
                 `ADD:  alu_result = rd1 + rd2;  //add rd  = rs1 + rs2
                 `SUB:  alu_result = rd1 - rd2; //sub rd = rs1 - rs2
@@ -383,9 +383,7 @@ module alu (
                 `BGEU:begin
                     if(rd1>=rd2) btaken =1;  //true : pc = pc+IMM  //zero extend
                     else btaken =0; //false :pc= pc +4
-                end
-
-                
+                end 
         endcase
     end
 

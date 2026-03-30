@@ -10,7 +10,8 @@ module instruction_mem(
 
     initial begin
         
-        $readmemh("riscv_rv32i_rom_data_sum.mem", rom);
+        $readmemh("U_DMEM.mem", rom);
+        //$readmemh("riscv_rv32i_rom_data_sum.mem", rom);
 
     end
 
