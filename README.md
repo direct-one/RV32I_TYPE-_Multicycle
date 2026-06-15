@@ -2,6 +2,10 @@
 
 # CPU_APB
 
+## Block Diagram 
+<img width="3540" height="1801" alt="image" src="https://github.com/user-attachments/assets/05103c22-dc16-4e77-9eaa-66e0e1dd9e26" />
+
+
 ## Composition
 
 - CPU
