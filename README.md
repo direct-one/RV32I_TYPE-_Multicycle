@@ -1,4 +1,4 @@
-# CPU_APB(Multicycle) 통합 시스템 설계서
+# CPU_APB(Multicycle) 통합 시스템 설계
 
 ## 1. Block Diagram
 ![CPU_APB_Block_Diagram](https://github.com/user-attachments/assets/05103c22-dc16-4e77-9eaa-66e0e1dd9e26)
