@@ -79,3 +79,33 @@ APB Master는 CPU Core의 요청(`w_req`, `r_req`)을 받아 표준 3상태 FSM�
 * **PRDATA Mux:** 현재 활성화된 `PSELx` 기반 선택 플래그를 멀티플렉서 제어 신호로 사용하여, 해당 Slave의 출력 데이터만을 Master의 `PRDATA` 입력으로 연결
 
 ---
+
+## 6. Simulation
+**Simulation Scenario**
+1. reset을 통한 초기화
+2. sw(S-Typ) 명령어를 통해 0번 LED를 출력 및 FND 1를 출력 
+3. 같은 방식으로 sw명령어를 통해 1~4번 LED를 출력 및 FND 15를 출력
+4. 같은 방식으로 sw명령어를 통해 LED 0,2,4,6만 출력 및 FND 85 출력
+
+<img width="498" height="743" alt="image" src="https://github.com/user-attachments/assets/e4d4a4ab-3b1f-4729-91c4-eedb16e36971" />
+
+### Prdata로 0x01의 값을 받아오는 것을 확인 
+
+<img width="907" height="430" alt="image" src="https://github.com/user-attachments/assets/e349b7f6-44d8-46cc-8aac-0a0e6a73b34b" />
+
+### sw(S-Typ) 명령어를 통해 0번 LED를 출력 및 FND 1를 출력
+
+<img width="760" height="498" alt="image" src="https://github.com/user-attachments/assets/6ec173e5-05d1-43a7-814e-f4da623f6fab" />
+
+### 같은 방식으로 sw명령어를 통해 1~4번 LED를 출력 및 FND 15를 출력
+
+<img width="794" height="494" alt="image" src="https://github.com/user-attachments/assets/7c9f0141-f0a4-472d-bef1-859ebf6def59" />
+
+### 같은 방식으로 sw명령어를 통해 LED 0,2,4,6만 출력 및 FND 85 출력
+
+
+<img width="381" height="222" alt="image" src="https://github.com/user-attachments/assets/494d825b-eca9-43bc-822f-b8408cc0106a" />
+
+
+
+
